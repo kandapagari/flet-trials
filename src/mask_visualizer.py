@@ -1,8 +1,12 @@
-from pathlib import Path
 import base64
+import ssl
+from pathlib import Path
+
 import cv2
 import flet as ft
-from flet import Text, Row, Container, Column
+from flet import Column, Container, Row, Text
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def main(page: ft.Page):
@@ -51,6 +55,7 @@ def main(page: ft.Page):
         else:
             print('Image root folder does not exist')
         num_img_ctnr.value = f'Number of Images: {len(image_list)}'
+        page.update()
 
     def ann_root_changed(e):
         ann_root = Path(ann_root_tf.value)
@@ -59,6 +64,7 @@ def main(page: ft.Page):
         else:
             print('Annotation root folder does not exist')
         num_ann_ctnr.value = f'Number of Annotations: {len(annotation_list)}'
+        page.update()
 
     def redraw(e):
         jpg_as_text = draw_image(int(resize_width.value),
@@ -97,7 +103,7 @@ def main(page: ft.Page):
                                  value=720,
                                  border_color=ft.colors.TRANSPARENT)
 
-    image_path = 'data/dummy_data.jpg'
+    image_path = 'assets/dummy_data.jpg'
     image = cv2.imread(image_path)
 
     jpg_as_text = draw_image(resize_width.value, resize_height.value, image)
@@ -139,7 +145,7 @@ def main(page: ft.Page):
                                    width=56,
                                    icon=ft.icons.KEYBOARD_ARROW_LEFT_OUTLINED,
                                    bgcolor=theme_color,
-                                   icon_color=ft.colors.BLACK87))
+                                   icon_color=ft.colors.WHITE))
 
     right_arrow_btn = Container(width=56,
                                 height=56,
@@ -150,7 +156,7 @@ def main(page: ft.Page):
                                     width=56,
                                     bgcolor=theme_color,
                                     icon=ft.icons.KEYBOARD_ARROW_RIGHT_SHARP,
-                                    icon_color=ft.colors.BLACK87))
+                                    icon_color=ft.colors.WHITE))
 
     page.add(
         Row(vertical_alignment=ft.CrossAxisAlignment.START,
@@ -175,26 +181,30 @@ def main(page: ft.Page):
                                    ]))
                     ]),
                     border_radius=ft.border_radius.all(10)),
-                ft.VerticalDivider(width=1, color="grey"),
-                Column(expand=1,
-                       alignment='top',
-                       controls=[
-                           setting_tf,
-                           Container(content=theme_switch),
-                           Container(content=full_screen),
-                           Container(content=always_on_top),
-                           Row(vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                               controls=[resize_width, resize_height]),
-                           ft.ElevatedButton(height=48,
-                                             width=128,
-                                             text="Re draw image",
-                                             color=theme_color,
-                                             on_click=redraw),
-                           div,
-                           Column(controls=[num_img_ctnr, num_ann_ctnr]),
-                           div,
-                           annotations_tf,
-                       ])
+                # ft.VerticalDivider(width=1, color="grey"),
+                div,
+                Column(
+                    expand=1,
+                    alignment='top',
+                    controls=[
+                        setting_tf,
+                        Container(content=theme_switch),
+                        Container(content=full_screen),
+                        Container(content=always_on_top),
+                        Row(vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                            controls=[resize_width, resize_height]),
+                        Container(
+                            content=ft.IconButton(height=48,
+                                                  width=48,
+                                                  icon=ft.icons.REFRESH,
+                                                  icon_color=ft.colors.WHITE,
+                                                  bgcolor=theme_color,
+                                                  on_click=redraw)),
+                        div,
+                        Column(controls=[num_img_ctnr, num_ann_ctnr]),
+                        div,
+                        annotations_tf,
+                    ])
             ]), div,
         Row(vertical_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
