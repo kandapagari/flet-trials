@@ -103,9 +103,8 @@ def main(page: ft.Page):
                                  value=720,
                                  border_color=ft.colors.TRANSPARENT)
 
-    image_path = 'assets/dummy_data.jpg'
+    image_path = 'assets/images/dummy_data.jpg'
     image = cv2.imread(image_path)
-
     jpg_as_text = draw_image(resize_width.value, resize_height.value, image)
     image_view = ft.Image(src_base64=jpg_as_text.decode(),
                           fit=ft.ImageFit.COVER,
@@ -159,7 +158,8 @@ def main(page: ft.Page):
                                     icon_color=ft.colors.WHITE))
 
     page.add(
-        Row(vertical_alignment=ft.CrossAxisAlignment.START,
+        Row(
+            vertical_alignment=ft.CrossAxisAlignment.START,
             expand=1,
             controls=[
                 Container(
@@ -205,7 +205,8 @@ def main(page: ft.Page):
                         div,
                         annotations_tf,
                     ])
-            ]), div,
+            ]),
+        div,
         Row(vertical_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
                 Container(
